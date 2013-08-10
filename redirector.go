@@ -66,9 +66,16 @@ func handle(w http.ResponseWriter, r *http.Request) {
 	http.Redirect(w, r, target, http.StatusFound)
 }
 
-func main() {
+func init() {
 	flag.Parse()
 
+	// Fail if we can't load the config initially.
+	if _, err := loadConfig(*configFile); err != nil {
+		log.Fatal(err)
+	}
+}
+
+func main() {
 	mux := http.NewServeMux()
 	mux.HandleFunc("/", handle)
 	log.Println("Listening on", *addr)
